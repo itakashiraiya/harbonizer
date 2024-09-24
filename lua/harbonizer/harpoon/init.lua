@@ -8,8 +8,11 @@ end
 
 print("hello harpoon")
 
-M.popup = function()
-	popup.create(1)
+M.pop = function()
+	local popup_result = popup.create(1) -- Assuming popup.create returns a table or something to inspect
+
+	-- If you want to print the popup_result, use vim.inspect
+	print(vim.inspect(popup_result))
 end
 
 return M
