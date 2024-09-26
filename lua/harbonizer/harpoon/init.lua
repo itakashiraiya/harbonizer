@@ -3,12 +3,6 @@ local marks = require("harbonizer.harpoon.marks")
 
 local M = {}
 
-M.hello = function()
-	print("hello function")
-end
-
-print("hello harpooner")
-
 M.toggle = function()
 	monitor.toggleWin()
 end

@@ -10,7 +10,7 @@ local function newWin()
 	local width = 80
 	local borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
 
-	local list = marks.get_mark_list()
+	local list = marks.file_list
 	print(vim.inspect(list))
 
 	Harbonizer_win_id = popup.create(list, {
@@ -27,7 +27,7 @@ end
 
 local function closeWin()
 	local buf = vim.api.nvim_win_get_buf(Harbonizer_win_id)
-	marks.update_mark_order(buf)
+	marks.update_mark_list(buf)
 	vim.api.nvim_win_close(0, false)
 end
 

@@ -17,6 +17,80 @@ local function create_mark(file)
 end
 
 M.marks = {}
+M.file_list = {}
+
+local function get_mark_from_file(file)
+	if file[1] == 'X' then
+		return nil
+	end
+
+	for _, mark in ipairs(M.marks) do
+		if mark.file == file then
+			return mark
+		end
+	end
+	return nil
+end
+
+local function marks_contain_file(file)
+	return get_mark_from_file(file) ~= nil
+end
+
+local function list_contains_file(list, file)
+	for _, other in ipairs(list) do
+		if file == other then
+			return true
+		end
+	end
+	return false
+end
+
+M.update_mark_list = function(buf)
+	local new_list = vim.api.nvim_buf_get_lines(buf, 0, 4, false)
+	for i, line in ipairs(new_list) do
+		if line:sub(1, 1) == 'X' then
+			print("M.update_mark_list(): line[1] == 'X' && i == " .. i)
+			goto continue
+		end
+
+		if marks_contain_file(line) then
+			goto continue
+		end
+
+		new_list[i] = "X" .. line
+
+		::continue::
+	end
+
+	local idx_to_remove = {}
+	for i, mark in ipairs(M.marks) do
+		if not list_contains_file(new_list, mark.file) then
+			table.insert(idx_to_remove, i)
+		end
+	end
+	table.sort(idx_to_remove, function (a, b) return a > b end)
+	for _, idx in ipairs(idx_to_remove) do
+		table.remove(M.marks, idx)
+	end
+
+	M.file_list = new_list
+end
+
+M.nav_to = function(idx)
+	if idx > #M.file_list then
+		print("file list index out of bounds")
+		return
+	end
+	local file = M.file_list[idx]
+	local mark = get_mark_from_file(file)
+
+	if mark == nil then
+		print("nonexistent mark")
+		return
+	end
+
+	vim.api.nvim_set_current_buf(mark.buf)
+end
 
 M.create_mark = function()
 	local file = vim.api.nvim_buf_get_name(0)
@@ -33,52 +107,7 @@ M.create_mark = function()
 	end
 
 	table.insert(M.marks, create_mark(file))
-end
-
-M.nav_to = function(idx)
-	local mark = M.marks[idx]
-	vim.api.nvim_set_current_buf(mark.buf)
-end
-
-local function swap_marks(i1, i2)
-	local temp = M.marks[i1]
-	M.marks[i1] = M.marks[i2]
-	M.marks[i2] = temp
-end
-
-M.update_mark_order = function(buf)
-	local harbonizer_marks = vim.api.nvim_buf_get_lines(buf, 0, 4, false)
-	for i, line in ipairs(harbonizer_marks) do
-		print("marks.update_mark_order(): line or nil == " .. (line or "nil"))
-		if line == "" then
-			-- table.insert(M.marks, "")
-			-- swap_marks(i, #M.marks)
-		else
-			for i2, mark in ipairs(M.marks) do
-				print("marks.update_mark_order(): mark.line == " .. (mark.file or "nil"))
-				if mark.file == line then
-					print("marks.update_mark_order(): i == " .. i .. "; i2 == " .. i2)
-					swap_marks(i, i2)
-					return
-				end
-			end
-		end
-	end
-	print(vim.inspect(M.marks))
-end
-
-M.get_mark_list = function()
-	local list = {}
-
-	for _, mark in ipairs(M.marks) do
-		if mark == "" then
-			table.insert(list, "")
-		else
-			table.insert(list, mark.file)
-		end
-	end
-
-	return list
+	table.insert(M.file_list, file)
 end
 
 return M
