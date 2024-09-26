@@ -1,4 +1,5 @@
 local popup = require("plenary.popup")
+local marks = require("harbonizer.harpoon.marks")
 
 local M = {}
 
@@ -9,26 +10,24 @@ local function newWin()
 	local width = 80
 	local borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
 
-	Harbonizer_win_id = popup.create({
-		"1.woooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooOOOOow",
-		"2.WOW!",
-		"3.wtf??",
-		"4.sussy",
-		"5.baki",
-		"6.sigma",
-	}, {
+	local list = marks.get_mark_list()
+	print(vim.inspect(list))
+
+	Harbonizer_win_id = popup.create(list, {
 		title = "Harpoon",
-		--		highlight = "HarpoonWindow",
+		--highlight = "HarpoonWindow",
 		line = math.floor(((vim.o.lines - height) / 2) - 1),
 		col = math.floor((vim.o.columns - width) / 2),
 		minwidth = width,
 		minheight = height,
 		borderchars = borderchars,
-		padding = { 2, 2, 2, 2 },
+		--padding = { 2, 2, 2, 2 },
 	})
 end
 
 local function closeWin()
+	local buf = vim.api.nvim_win_get_buf(Harbonizer_win_id)
+	marks.update_mark_order(buf)
 	vim.api.nvim_win_close(0, false)
 end
 

@@ -21,6 +21,10 @@ M.marks = {}
 M.create_mark = function()
 	local file = vim.api.nvim_buf_get_name(0)
 
+	if file == "" then
+		return
+	end
+
 	for _, mark in ipairs(M.marks) do
 		if mark.file == file then
 			update_mark_cursor(mark)
@@ -43,20 +47,24 @@ local function swap_marks(i1, i2)
 end
 
 M.update_mark_order = function(buf)
-	local harbonizer_marks = vim.api.nvim_buf_get_lines(buf, 0, 4, true)
+	local harbonizer_marks = vim.api.nvim_buf_get_lines(buf, 0, 4, false)
 	for i, line in ipairs(harbonizer_marks) do
+		print("marks.update_mark_order(): line or nil == " .. (line or "nil"))
 		if line == "" then
-			table.insert(M.marks, "")
-			swap_marks(i, #M.marks)
+			-- table.insert(M.marks, "")
+			-- swap_marks(i, #M.marks)
 		else
 			for i2, mark in ipairs(M.marks) do
-				if mark.line == line then
+				print("marks.update_mark_order(): mark.line == " .. (mark.file or "nil"))
+				if mark.file == line then
+					print("marks.update_mark_order(): i == " .. i .. "; i2 == " .. i2)
 					swap_marks(i, i2)
 					return
 				end
 			end
 		end
 	end
+	print(vim.inspect(M.marks))
 end
 
 M.get_mark_list = function()
