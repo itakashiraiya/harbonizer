@@ -1,0 +1,6 @@
+echo "tmux bashrc"
+
+alias test1="ls -l"
+test2() {
+	echo testing
+}

@@ -16,8 +16,9 @@ local subDelimiter = ","
 --
 -- end
 
-function M.launch(configs_table)
-	local configs = "-f " .. table.concat(configs_table, " -f ")
+function M.launch(configs_table, ...)
+	local configs = "-f " .. table.concat(configs_table, " -f ") .. " " .. table.concat(table.pack(...), " ")
+	print(configs)
 	os.execute("tmux " .. configs)
 end
 

@@ -1,15 +1,17 @@
 #!/usr/bin/env lua
 
+local bash = require("bash")
+
 local function get_script_dir()
 	local str = debug.getinfo(1, "S").source:sub(2) -- Remove the "@" prefix from the source path
-	return str:match("(.*/)"):sub(1, -2)
+	str = str:match("(.*/)"):sub(1, -2)
+	return bash.bashRet("realpath " .. str):gsub("\n$", "")
 end
 
 package.path = get_script_dir() .. "/?/init.lua;" .. get_script_dir() .. "/?.lua;" .. package.path
 
 local json = require("cjson")
 local strings = require("strings")
-local bash = require("bash")
 local tmux = require("utils.tmux")
 local home = os.getenv("HOME")
 local name = "harbonizer"
@@ -26,6 +28,7 @@ local cmds = {}
 
 function cmds.test()
 	cmds.harbour()
+	print("aa")
 	-- tmux.temp(1, "/home/viktor/dev/lua/harbonizer/files/temp.tmux,3,16")
 end
 
@@ -68,14 +71,27 @@ end
 function cmds.init()
 	bash.bash("mkdir -p " .. dockyard)
 	local conf = {}
-	for _, v in ipairs({ home .. "/.tmux.conf", home .. "/.config/tmux/tmux.conf" }) do
+	for _, v in ipairs({ config .. "/tmux.conf", home .. "/.tmux.conf", home .. "/.config/tmux/tmux.conf" }) do
 		if os.rename(v, v) then
 			table.insert(conf, v)
 		end
 	end
 	conf = arg[2] and { arg[2] } or conf
 	table.insert(conf, get_script_dir() .. "/files/priv.tmux")
-	tmux.launch(conf)
+	local ENV = "BASH_ENV"
+	local env = bash.getEnv(ENV)
+	if env ~= "" then
+		env = env .. ":"
+	end
+	env = env .. get_script_dir() .. "/bash/init.sh"
+	print("env: " .. env)
+	tmux.launch(
+		conf,
+		"new-session",
+		'"tmux set-env -g ' .. ENV .. " '" .. env .. "';",
+		"export " .. ENV .. "='" .. env .. "';",
+		'bash"'
+	)
 end
 
 local cmd_name = arg[1] or "init"
