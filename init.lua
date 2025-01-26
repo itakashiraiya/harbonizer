@@ -1,4 +1,5 @@
 #!/usr/bin/env lua
+-- nvim --cmd "lua package.path = '/home/viktor/dev/lua/?.lua;' .. package.path; require('harbonizer.nvim.test')"
 
 local bash = require("bash")
 
@@ -84,7 +85,6 @@ function cmds.init()
 		env = env .. ":"
 	end
 	env = env .. get_script_dir() .. "/bash/init.sh"
-	print("env: " .. env)
 	tmux.launch(
 		conf,
 		"new-session",

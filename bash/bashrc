@@ -1,6 +1,16 @@
+echo "
+if [[ \$- == *i* ]]; then
+    echo \"Interactive shell: test\"
+fi"
+
 echo "tmux bashrc"
 
 alias test1="ls -l"
 test2() {
 	echo testing
+}
+
+nvim() {
+	echo "nvim:"
+	command nvim "$@"
 }
