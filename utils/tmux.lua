@@ -23,23 +23,27 @@ function M.launch(configs_table, ...)
 end
 
 function M.exec(...)
-	bash.bash("tmux", ...)
+	bash.exec("tmux ", ...)
 end
 
 function M.execRet(...)
-	return bash.bashRet("tmux", ...)
+	return bash.execRet("tmux ", ...)
 end
 
 function M.source(file)
-	M.execRet(" source-file ", file)
+	M.execRet("source-file ", file)
 end
 
-function M.msg(str)
+function M.display(str)
+	M.exec("display '" .. str .. "'")
+end
+
+function M.info(str)
 	return M.execRet("display -p '" .. str .. "'")
 end
 
 function M.getShipDir()
-	return M.msg("#{session_path}")
+	return M.info("#{session_path}")
 end
 
 local getWindowInfo = {}
@@ -62,12 +66,12 @@ function getWindowInfo.nvim(idx)
 	os.execute("sleep 0.05")
 
 	local result = M.execRet("capture-pane -t", idx, "-p -S -1")
-	result = strings.cut(result, "\n", -2)[2]
+	result = strings.cut(result, "\n", -2)[3]
 	return result
 end
 
 function M.getCargo()
-	local cargoStr = M.execRet("list-windows -F '#{window_stack_index}#I|#W'")
+	local cargoStr = M.execRet("list-windows -F '#{window_stack_index}|#I|#W'")
 	cargoStr = strings.split(cargoStr, "\n")
 
 	table.sort(cargoStr, function(a, b)
@@ -76,8 +80,9 @@ function M.getCargo()
 
 	local cargo = {}
 	for _, win in ipairs(cargoStr) do
-		local idx, name = table.unpack(strings.split(string.sub(win, 2), delimiter))
-		local info = getWindowInfo[name] and delimiter .. getWindowInfo[name](idx)
+		local _, idx, name = table.unpack(strings.split(win, delimiter))
+		-- local info = getWindowInfo[name] and delimiter .. getWindowInfo[name](idx)
+		local info
 
 		table.insert(cargo, { idx = idx, name = name, info = info })
 	end
