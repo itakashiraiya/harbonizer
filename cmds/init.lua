@@ -1,5 +1,3 @@
-print("aaaa")
-print(table.unpack(arg))
 local bash = require("bash")
 local tmux = require("utils.tmux")
 bash.exec("mkdir -p " .. Dockyard)

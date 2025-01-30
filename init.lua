@@ -41,9 +41,11 @@ end
 local lfs = require("mylfs")
 
 local cmd_name, arg = arg[1], { table.unpack(arg, 2) }
+cmd_name = cmd_name and cmd_name:gsub("%.", "/")
 
 lfs.chdir(Harbonizer_Dir)
-if not lfs.attributes("cmds/" .. cmd_name or "" .. ".lua") then
+if not cmd_name or not lfs.attributes("cmds/" .. cmd_name .. ".lua") then
+	print(cmd_name)
 	cmd_name = "init"
 	arg = _G.arg
 end

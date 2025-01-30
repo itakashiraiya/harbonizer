@@ -1,9 +1,10 @@
 local bash = require("bash")
 local tmux = require("utils.tmux")
 local json = require("cjson")
+
 local dir = tmux.getShipDir()
 local cargo = tmux.getCargo()
-dir = Dir_to_filename(dir)
-bash.exec("mkdir -p " .. Dockyard .. "/" .. dir)
+local name = Dir_to_filename(dir)
+bash.exec("mkdir -p " .. Dockyard .. "/" .. name)
 local cargoJson = json.encode(cargo)
-bash.write(cargoJson, Dockyard .. "/" .. dir .. "/cargo")
+bash.write(cargoJson, Dockyard .. "/" .. name .. "/cargo")
