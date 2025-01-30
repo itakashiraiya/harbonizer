@@ -1,0 +1,5 @@
+local tmux = require("utils.tmux")
+local bash = require("bash")
+print("as")
+tmux.display("aaa")
+bash.exec("touch " .. Harbonizer_Dir .. "/temp")
