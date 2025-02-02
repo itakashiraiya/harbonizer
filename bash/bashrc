@@ -7,5 +7,5 @@ test2() {
 
 nvim() {
 	plugin="$(dirname "$HARBONIZER_DIR")"
-	command nvim --cmd "lua package.path = '$plugin/?.lua;' .. package.path; require('harbonizer.nvim.test')" "$@"
+	command nvim -c "lua dofile('/home/viktor/dev/lua/harbonizer/nvim/plugins/test.lua')" "$@"
 }

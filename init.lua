@@ -1,5 +1,8 @@
 #!/usr/bin/env lua
 
+-- lua vim.opt.runtimepath:append(',~/dev/lua/harbonizer/nvim')
+-- lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
+
 local bash = require("bash")
 local str = debug.getinfo(1, "S").source:sub(2)
 str = str:match("(.*/)"):sub(1, -2)
@@ -14,10 +17,6 @@ Config = Home .. "/.config/" .. Name
 Data = Home .. "/.local/share/" .. Name
 Dockyard = Data .. "/dockyard"
 Fleet = Data .. "/fleet"
-
-function ToCargoPath(shipDir)
-	return Dockyard .. shipDir
-end
 
 function Dir_to_filename(dir)
 	dir = dir:gsub("%%", "%%.")
@@ -36,6 +35,14 @@ function Filename_to_dir(filename)
 		return string.rep("/", len - 1) .. "%"
 	end)
 	return filename
+end
+
+function ToCargoPath(shipDir)
+	return Dockyard .. "/" .. Dir_to_filename(shipDir)
+end
+
+function GetCargoPath()
+	return ToCargoPath(require("utils.tmux").getShipDir())
 end
 
 local lfs = require("mylfs")

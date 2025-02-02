@@ -16,8 +16,8 @@ local subDelimiter = ","
 --
 -- end
 
-function M.launch(configs_table, ...)
-	local configs = "-f " .. table.concat(configs_table, " -f ") .. " " .. table.concat(table.pack(...), " ")
+function M.launch(...)
+	local configs = table.concat(table.pack(...), " ")
 	print("tmux " .. configs)
 	os.execute("tmux " .. configs)
 end
@@ -34,16 +34,16 @@ function M.source(file)
 	M.execRet("source-file ", file)
 end
 
-function M.display(str)
-	M.exec("display '" .. str .. "'")
+function M.display(...)
+	M.exec("display '", ..., "'")
 end
 
-function M.info(str)
-	return M.execRet("display -p '" .. str .. "'")
+function M.info(...)
+	return M.execRet("display -p", ...)
 end
 
 function M.getShipDir()
-	return M.info("#{session_path}")
+	return M.info("'#{session_path}'")
 end
 
 local getWindowInfo = {}

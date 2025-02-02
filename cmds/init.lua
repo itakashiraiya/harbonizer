@@ -15,12 +15,13 @@ if env ~= "" then
 	env = env .. ":"
 end
 env = env .. Harbonizer_Dir .. "/bash/init.sh"
+print(Config)
 tmux.launch(
-	conf,
 	"new-session",
 	'"tmux set-env -g ' .. ENV .. " '" .. env .. "';",
 	"export " .. ENV .. "='" .. env .. "';",
 	"tmux set-env -g " .. EnvDir .. " '" .. Harbonizer_Dir .. "';",
 	"export " .. EnvDir .. "='" .. Harbonizer_Dir .. "';",
-	'bash"'
+	'bash"',
+	"\\; source-file " .. Config .. "/tmux.conf"
 )
