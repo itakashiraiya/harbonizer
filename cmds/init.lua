@@ -1,14 +1,6 @@
 local bash = require("bash")
 local tmux = require("utils.tmux")
 bash.exec("mkdir -p " .. Dockyard)
-local conf = {}
-for _, v in ipairs({ Config .. "/tmux.conf", Home .. "/.tmux.conf", Home .. "/.config/tmux/tmux.conf" }) do
-	if os.rename(v, v) then
-		table.insert(conf, v)
-	end
-end
-conf = arg[2] and { arg[2] } or conf
-table.insert(conf, Harbonizer_Dir .. "/files/priv.tmux")
 local ENV = "BASH_ENV"
 local env = bash.getEnv(ENV)
 if env ~= "" then
