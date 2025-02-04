@@ -8,12 +8,11 @@ if env ~= "" then
 end
 env = env .. Harbonizer_Dir .. "/bash/init.sh"
 print(Config)
-tmux.launch(
-	"new-session",
-	'"tmux set-env -g ' .. ENV .. " '" .. env .. "';",
-	"export " .. ENV .. "='" .. env .. "';",
-	"tmux set-env -g " .. EnvDir .. " '" .. Harbonizer_Dir .. "';",
-	"export " .. EnvDir .. "='" .. Harbonizer_Dir .. "';",
-	'bash"',
-	"\\; source-file " .. Config .. "/tmux.conf"
+bash.write(
+	Harbonizer_Dir .. "/files/temp.tmux",
+	"set-env -g " .. ENV .. " '" .. env .. "'\n",
+	"set-env -g " .. EnvDir .. " '" .. Harbonizer_Dir .. "'\n",
+	"source-file " .. Harbonizer_Dir .. "/files/priv.tmux\n",
+	"source-file " .. Config .. "/tmux.conf\n"
 )
+tmux.launch("new-session \\;", "source-file " .. Harbonizer_Dir .. "/files/temp.tmux")
