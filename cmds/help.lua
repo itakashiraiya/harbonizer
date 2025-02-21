@@ -1,2 +1,4 @@
-print("Available commands: init, shutdown, sail, harbour, destroy, build")
-print(table.unpack(arg))
+return function()
+	print("Available commands: init, shutdown, sail, harbour, destroy, build")
+	print(table.unpack(arg))
+end

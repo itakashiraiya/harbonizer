@@ -1,5 +1,0 @@
-local bash = require("bash")
-local tmux = require("utils.tmux")
-local cargo = GetCargoPath()
-bash.exec("rm " .. cargo .. "/*")
-bash.exec("rm -d " .. cargo)

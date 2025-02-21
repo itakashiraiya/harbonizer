@@ -1,11 +1,26 @@
 echo "tmux bashrc"
 
-alias test1="ls -l"
-test2() {
-	echo testing
-}
-
-nvim() {
-	plugin="$(dirname "$HARBONIZER_DIR")"
-	command nvim -c "lua dofile('/home/viktor/dev/lua/harbonizer/nvim/plugins/test.lua')" "$@"
-}
+# TODO: if user sets an alias/func, properly set it to "$old_nvim" instead
+#
+# if alias nvim &>/dev/null; then
+# 	old_nvim="command $(alias nvim | sed -E "s/^alias nvim='(.*)'/\1/")"
+# 	echo alias
+# elif type -t nvim | grep -q 'function'; then
+# 	old_nvim="old_$(declare -f nvim)
+# 	old_nvim"
+# 	echo func
+# elif command -v nvim &>/dev/null; then
+# 	old_nvim="command nvim"
+# 	echo cmd
+# else
+# 	echo "[WARNING] nvim not found"
+# 	return 1
+# fi
+#
+# echo "echo:"
+# echo "$old_nvim"
+# #
+# unalias nvim
+# nvim() {
+# 	 eval "$old_nvim -c \"lua dofile('$HARBONIZER_DIR/nvim/plugins/test.lua')\" \"$@\""
+# }
