@@ -1,3 +1,6 @@
-local tmux = require("utils.tmux")
+local bash = require("bash")
 
-return function() end
+return function()
+	bash.exec("touch " .. Harbonizer_Dir .. "/jusk")
+	Cmd("nvim.setup")
+end

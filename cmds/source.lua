@@ -5,7 +5,7 @@ local tmux = require("utils.tmux")
 return function(file)
 	file = file or Config .. "/harb.conf"
 	if not tmux.serverOn() then
-		print("can only be run if harbonizer is active")
+		print("Source can only be run if harbonizer is active")
 		return
 	end
 

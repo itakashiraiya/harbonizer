@@ -13,14 +13,13 @@ return function(...)
 		print(key, value)
 	end
 
-	local routine
-
 	if tmux.serverOn() then
 		if bash.getEnv(EnvDir) ~= "" then
 			print("in harb")
 			args.file = args.file or ""
 		else
 			if bash.getEnv("TMUX") ~= "" then
+				tmux.exec('detach -E "' .. Harbonizer_Dir .. 'init.lua harb"')
 				print("TODO: switch/detach/attach")
 				-- TODO: find a way of switching servers
 			else
@@ -41,14 +40,13 @@ return function(...)
 			tmux.exec("attach")
 		end
 	end
-	if args.sess then
-		print("sail")
-		Cmd("sail", args.sess)
-	end
-	if args.cmd then
-		tmux.exec(args.cmd)
-	end
+	-- if args.sess then
+	-- 	print("sail")
+	-- 	Cmd("sail", args.sess)
+	-- end
+	-- if args.cmd then
+	-- 	tmux.exec(args.cmd)
+	-- end
 
 	bash.exec("touch " .. Harbonizer_Dir .. "/sus")
-	-- routine = require("nvim/monitor")
 end

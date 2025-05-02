@@ -1,5 +1,4 @@
 #!/usr/bin/env lua
-
 -- lua vim.opt.runtimepath:append(',~/dev/lua/harbonizer/nvim')
 -- lua print(vim.inspect(vim.api.nvim_list_runtime_paths()))
 local bash = require("bash")
@@ -47,7 +46,7 @@ end
 local lfs = require("mylfs")
 
 function Cmd(cmd_name, ...)
-	if not cmd_name or not lfs.attributes(Harbonizer_Dir .. "/cmds/" .. cmd_name .. ".lua") then
+	if not cmd_name or not lfs.attributes(Harbonizer_Dir .. "/cmds/" .. cmd_name:gsub("%.", "/") .. ".lua") then
 		print("cmd: default main")
 		require("cmds.main")(cmd_name, ...)
 	else

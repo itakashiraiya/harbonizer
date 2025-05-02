@@ -1,15 +1,10 @@
 local bash = require("bash")
 local strings = require("strings")
+local tmux = require("utils.tmux")
 
-return function(openFunc, closeFunc, extra)
-	if type(openFunc) ~= "function" or type(closeFunc) ~= "function" or extra then
-		print("invalid args, correct usage:")
-		print("setup <openFunc> <closeFunc>")
-		return
-	end
+local function loop(openFunc, closeFunc)
 	local last_sockets = {}
 	while true do
-		local ret = { opened = {} }
 		local temp_sockets = {}
 		local new_sockets =
 			strings.split(bash.execRet("lsof -U 2>/dev/null | grep nvim | grep '\\(LISTEN\\)' | awk '{print$9}'"), "\n")
@@ -22,10 +17,37 @@ return function(openFunc, closeFunc, extra)
 			end
 		end
 
-		for sock, _ in pairs(temp_sockets) do
+		for sock, _ in pairs(last_sockets) do
 			closeFunc(sock)
 		end
 		last_sockets = temp_sockets
-		coroutine.yield(ret)
+		coroutine.yield()
 	end
+end
+
+local function setup(openFunc, closeFunc)
+	if type(openFunc) ~= "function" or type(closeFunc) ~= "function" then
+		print("invalid args, correct usage:")
+		print("setup <openFunc> <closeFunc>")
+		return
+	end
+
+	local co = coroutine.create(loop)
+	local sucsess = coroutine.resume(co, openFunc, closeFunc)
+	while sucsess do
+		sucsess = coroutine.resume(co)
+	end
+end
+
+local function connectSocket(socket) end
+
+return function()
+	local function opened(sock)
+		tmux.display("opened: " .. sock)
+	end
+
+	local function closed(sock)
+		tmux.display("closed: " .. sock)
+	end
+	setup(opened, closed)
 end

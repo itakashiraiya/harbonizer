@@ -1,13 +1,11 @@
 local lfs = require("mylfs")
 local bash = require("bash")
-local tmux = require("utils.tmux")
 
-return function(file, ...)
+return function(file)
 	file = file and bash.realpath(file)
 
 	if file and not lfs.attributes(ToCargoPath(file)) then
-		print("not a stored ship")
-		return
+		return nil, error("not a stored ship")
 	end
 	print(file)
 	local ships = Filename_to_dir(bash.execRet("ls " .. Dockyard))
